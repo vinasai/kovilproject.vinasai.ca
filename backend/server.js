@@ -71,7 +71,7 @@ app.use((err, req, res, next) => {
 });
 
 // Define PORT
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5007;
 const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
