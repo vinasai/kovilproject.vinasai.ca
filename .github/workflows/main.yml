@@ -1,0 +1,98 @@
+name: kovilproject.vinasai.ca deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH Key
+        run: |
+          # Create SSH directory and set up private key
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # Add GitHub's host key to known_hosts to avoid verification prompts
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+          # Test the SSH connection (this may print a welcome message)
+          ssh -o StrictHostKeyChecking=no -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+      - name: Deploy to Server
+        run: |
+          # Define variables used for deployment
+          SERVER_USER=${{ secrets.SSH_USER }}
+          SERVER_IP=${{ secrets.SSH_HOST }}
+          SERVER_PATH=${{ secrets.WORK_DIR }}
+          REPO_URL="git@github.com:vinasai/kovilproject.vinasai.ca.git"
+          FRONTEND_DIR="$SERVER_PATH/frontend"
+          BACKEND_DIR="$SERVER_PATH/backend"
+          MAIN_BRANCH="main"
+     
+          # Connect to the server via SSH and run deployment commands
+          ssh -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP \
+          "SERVER_PATH='$SERVER_PATH' REPO_URL='$REPO_URL' MAIN_BRANCH='$MAIN_BRANCH' FRONTEND_DIR='$FRONTEND_DIR' BACKEND_DIR='$BACKEND_DIR' bash -s" << 'EOF'
+
+            set -e  # Exit immediately if any command fails
+            # Ensure the remote SSH known_hosts is set up
+            mkdir -p ~/.ssh
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+            # Check if the repository already exists
+            if [ -d "$SERVER_PATH/.git" ]; then
+              echo "Repository exists, pulling latest changes..."
+              cd "$SERVER_PATH"
+              git config --global --add safe.directory "$SERVER_PATH"
+              git reset --hard
+              git pull origin "$MAIN_BRANCH"
+            else
+              echo "Repository not found, cloning into a temporary folder..."
+              TEMP_CLONE_DIR="/tmp/kovilproject.vinasai.ca/repo-clone"
+              rm -rf "\$TEMP_CLONE_DIR"
+              git clone "$REPO_URL" "\$TEMP_CLONE_DIR"
+              mkdir -p "$SERVER_PATH"
+              mv "\$TEMP_CLONE_DIR"/* "$SERVER_PATH/"
+              mv "\$TEMP_CLONE_DIR"/.git "$SERVER_PATH/"
+              rm -rf "\$TEMP_CLONE_DIR"
+            fi
+            # Deploy the frontend (Next.js)
+            cd "$FRONTEND_DIR"
+            yarn install
+            yarn run build
+
+            # Determine if the output folder is 'build' or 'dist'
+            if [ -d "build" ]; then
+              BUILD_FOLDER="build"
+            elif [ -d "dist" ]; then
+              BUILD_FOLDER="dist"
+            else
+              echo "No build output folder found! Exiting..."
+              exit 1
+            fi
+            
+            # Double-check that BUILD_FOLDER has a value
+            if [ -z "$BUILD_FOLDER" ]; then
+              echo "BUILD_FOLDER variable is empty! Exiting..."
+              exit 1
+            fi
+            
+            echo "Found build folder: $BUILD_FOLDER"
+            
+            # Remove all content in SERVER_PATH except the build folder
+            find . -mindepth 1 -maxdepth 1 ! -name "$BUILD_FOLDER" -exec rm -rf {} +
+            
+            # Move the contents of the build folder into the SERVER_PATH
+            mv "$BUILD_FOLDER"/* .
+            rm -rf "$BUILD_FOLDER"
+ 
+            # Deploy the backend
+            cd "$BACKEND_DIR"
+            rm -rf node_modules package-lock.json
+            npm install
+            pm2 describe kovilproject.vinasai.ca-backend >/dev/null 2>&1 && pm2 restart kovilproject.vinasai.ca-backend || pm2 start server.js --name kovilproject.vinasai.ca-backend
+            # Restart Nginx to apply any configuration or content changes
+            sudo systemctl restart nginx
+          EOF
