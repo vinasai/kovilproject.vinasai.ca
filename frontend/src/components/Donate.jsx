@@ -10,7 +10,7 @@ const DonateForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

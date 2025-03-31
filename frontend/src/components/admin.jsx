@@ -15,18 +15,25 @@ const ServiceManagement = () => {
   const [preview, setPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentServiceId, setCurrentServiceId] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
 
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/services`)
       .then(response => {
-        setServices(response.data);
+        if (Array.isArray(response.data)) {
+          setServices(response.data);
+        } else {
+          console.error("API did not return an array:", response.data);
+          setServices([]); // Ensure it remains an array
+        }
       })
       .catch(error => {
         console.error('Error fetching services:', error);
+        setServices([]); // Handle errors gracefully
       });
   }, []);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
