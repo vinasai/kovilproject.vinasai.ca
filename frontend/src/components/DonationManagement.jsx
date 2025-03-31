@@ -11,14 +11,21 @@ const DonationManagementAdmin = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [currentDonationId, setCurrentDonationId] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL =import.meta.env.REACT_APP_BACKEND_URL;
 
   // Fetch donations on component mount
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/donations`)
-      .then(response => setDonations(response.data))
-      .catch(error => console.error('Error fetching donations:', error));
+      .then(response => {
+        console.log("API Response:", response.data);
+        setDonations(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch(error => {
+        console.error("Error fetching donations:", error);
+        setDonations([]); // Prevents map error
+      });
   }, []);
+  
 
   // Handle form input changes
   const handleChange = (e) => {

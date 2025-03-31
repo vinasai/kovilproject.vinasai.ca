@@ -5,18 +5,26 @@ import { useNavigate } from 'react-router-dom';
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
   // Fetch services from backend
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/services`)
       .then(response => {
-        setServices(response.data);
+        console.log('API Response:', response.data);
+        if (Array.isArray(response.data)) {
+          setServices(response.data);
+        } else {
+          console.error('Expected an array but got:', response.data);
+          setServices([]); // Fallback to empty array
+        }
       })
       .catch(error => {
         console.error('Error fetching services:', error);
+        setServices([]); // Prevent crash if API fails
       });
   }, []);
+  
 
   return (
     <section className="py-10 bg-gray-100">

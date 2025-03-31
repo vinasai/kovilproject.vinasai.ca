@@ -7,7 +7,7 @@ const AdminUserManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const [selectedUser, setSelectedUser] = useState(null); // State to store the selected user for editing
   const [familyMembers, setFamilyMembers] = useState([]); // State to store family members for editing
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
   // Fetch users from the backend
   useEffect(() => {

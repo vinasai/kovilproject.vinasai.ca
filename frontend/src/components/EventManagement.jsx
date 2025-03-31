@@ -11,13 +11,20 @@ const EventManagement = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [currentEventId, setCurrentEventId] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     axios.get(`${BACKEND_URL}/api/events`)
-      .then(response => setEvents(response.data))
-      .catch(error => console.error('Error fetching events:', error));
+      .then(response => {
+        console.log("API Response:", response.data);
+        setEvents(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch(error => {
+        console.error("Error fetching events:", error);
+        setEvents([]); // Prevents map error
+      });
   }, []);
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;

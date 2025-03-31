@@ -6,22 +6,24 @@ import "react-calendar/dist/Calendar.css";
 
 const ServiceDetails = () => {
   const { id } = useParams();
-  const [service, setService] = useState(null);
+  const [service, setService] = ([]);
   const [count, setCount] = useState(1);
   const [selectedDates, setSelectedDates] = useState([]);
   const navigate = useNavigate();
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    axios
-      .get(`${BACKEND_URL}/api/services/${id}`)
-      .then((response) => {
-        setService(response.data);
+    axios.get(`${BACKEND_URL}/api/services`)
+      .then(response => {
+        const serviceData = Array.isArray(response.data) ? response.data : [];
+        setService(serviceData);
       })
-      .catch((error) => {
-        console.error("Error fetching service details:", error);
+      .catch(error => {
+        console.error('Error fetching services:', error);
+        setService([]); // Ensure fallback to empty array
       });
-  }, [id]);
+  }, []);
+  
 
   // Disable past dates
   const isTileDisabled = ({ date }) => {

@@ -5,7 +5,7 @@ import { CalendarDays, ChevronDown } from 'lucide-react';
 const WeeklyPooja = () => {
   const [events, setEvents] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/events/upcoming-events`)
