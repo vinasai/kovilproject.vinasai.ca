@@ -1,6 +1,6 @@
 import React from 'react'
 
-const facebook = () => {
+const Facebook = () => {
   return (
     <div><div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-2xl shadow-lg">
     <h2 className="text-lg font-bold mb-4 text-center">Follow Us on Facebook</h2>
@@ -22,4 +22,4 @@ const facebook = () => {
   )
 }
 
-export default facebook
+export default Facebook
