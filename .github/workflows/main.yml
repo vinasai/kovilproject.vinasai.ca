@@ -46,8 +46,8 @@ jobs:
               echo "Repository exists, pulling latest changes..."
               cd "$SERVER_PATH"
               git config --global --add safe.directory "$SERVER_PATH"
-              git reset --hard
-              git pull origin "$MAIN_BRANCH"
+              git fetch origin
+              git reset --hard origin/"$MAIN_BRANCH"
             else
               echo "Repository not found, cloning into a temporary folder..."
               TEMP_CLONE_DIR="/tmp/kovilproject.vinasai.ca/repo-clone"
