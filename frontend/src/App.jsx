@@ -16,6 +16,7 @@ import DonationManagement from './components/DonationManagement';
 import ServiceDetails from './components/ServiceDetails';
 import Login from './components/Login';
 import AdminUserManagement from './components/AdminUserManagement';
+import Facebook from './components/Facebook';
 
 import { useLocation } from 'react-router-dom';
 import Headeradmin from './components/Headeradmin';
@@ -55,7 +56,7 @@ function App() {
           <Route path="/donateadmin" element={<DonationManagement />} />
           <Route path="/servicedetails/:id" element={<ServiceDetails />} />
           <Route path="/login" element={<Login />} />
-        
+          <Route path="/facebook" element={<Facebook />} />
           <Route path="/admin/users" element={<AdminUserManagement/>} />
         </Routes>
       </Layout>
