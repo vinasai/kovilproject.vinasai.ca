@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
   const [formData, setFormData] = useState({
-    amount: '',
-    name: '',
-    description: '',
-    time: '',
-    days: '',
+    amount: "",
+    name: "",
+    description: "",
+    time: "",
+    days: "",
     image: null,
   });
   const [preview, setPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentServiceId, setCurrentServiceId] = useState(null);
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
-
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/services`)
-      .then(response => {
+    axios
+      .get(`${BACKEND_URL}/api/services`)
+      .then((response) => {
         if (Array.isArray(response.data)) {
           setServices(response.data);
         } else {
@@ -28,16 +27,15 @@ const ServiceManagement = () => {
           setServices([]); // Ensure it remains an array
         }
       })
-      .catch(error => {
-        console.error('Error fetching services:', error);
+      .catch((error) => {
+        console.error("Error fetching services:", error);
         setServices([]); // Handle errors gracefully
       });
   }, []);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -45,7 +43,7 @@ const ServiceManagement = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       image: file,
     }));
@@ -55,19 +53,19 @@ const ServiceManagement = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (isNaN(formData.amount) || formData.amount === '') {
-      alert('Amount should be a number.');
+    if (isNaN(formData.amount) || formData.amount === "") {
+      alert("Amount should be a number.");
       return;
     }
 
     const form = new FormData();
-    form.append('amount', formData.amount);
-    form.append('name', formData.name);
-    form.append('description', formData.description);
-    form.append('time', formData.time);
-    form.append('days', formData.days.join(', '));
+    form.append("amount", formData.amount);
+    form.append("name", formData.name);
+    form.append("description", formData.description);
+    form.append("time", formData.time);
+    form.append("days", formData.days.join(", "));
     if (formData.image) {
-      form.append('image', formData.image);
+      form.append("image", formData.image);
     }
 
     const url = isEditing
@@ -76,27 +74,29 @@ const ServiceManagement = () => {
     const method = isEditing ? axios.put : axios.post;
     method(url, form, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
-    }).then(() => {
-      axios.get(`${BACKEND_URL}/api/services`)
-        .then(response => {
+    })
+      .then(() => {
+        axios.get(`${BACKEND_URL}/api/services`).then((response) => {
           setServices(response.data);
           resetForm();
         });
-    }).catch(error => {
-      console.error('Error saving service:', error);
-    });
+      })
+      .catch((error) => {
+        console.error("Error saving service:", error);
+      });
   };
 
   const deleteService = (serviceId) => {
-    if (window.confirm('Are you sure you want to delete this service?')) {
-      axios.delete(`${BACKEND_URL}/api/services/${serviceId}`)
+    if (window.confirm("Are you sure you want to delete this service?")) {
+      axios
+        .delete(`${BACKEND_URL}/api/services/${serviceId}`)
         .then(() => {
-          setServices(services.filter(service => service._id !== serviceId));
+          setServices(services.filter((service) => service._id !== serviceId));
         })
-        .catch(error => {
-          console.error('Error deleting service:', error);
+        .catch((error) => {
+          console.error("Error deleting service:", error);
         });
     }
   };
@@ -107,7 +107,7 @@ const ServiceManagement = () => {
       name: service.name,
       description: service.description,
       time: service.time,
-      days: service.days.join(', '),
+      days: service.days.join(", "),
       image: null,
     });
     setPreview(service.imageUrl);
@@ -117,11 +117,11 @@ const ServiceManagement = () => {
 
   const resetForm = () => {
     setFormData({
-      amount: '',
-      name: '',
-      description: '',
-      time: '',
-      days: '',
+      amount: "",
+      name: "",
+      description: "",
+      time: "",
+      days: "",
       image: null,
     });
     setPreview(null);
@@ -137,7 +137,7 @@ const ServiceManagement = () => {
         selectedDays.push(options[i].value);
       }
     }
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       days: selectedDays,
     }));
@@ -145,16 +145,22 @@ const ServiceManagement = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">Service Management</h2>
+      <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">
+        Service Management
+      </h2>
 
       {/* Form to create or edit a service */}
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
-        <h3 className="text-2xl font-medium mb-4 text-gray-600">{isEditing ? 'Edit Service' : 'Create New Service'}</h3>
+        <h3 className="text-2xl font-medium mb-4 text-gray-600">
+          {isEditing ? "Edit Service" : "Create New Service"}
+        </h3>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-600">Amount:</label>
+              <label className="block text-sm font-medium text-gray-600">
+                Amount:
+              </label>
               <input
                 type="number"
                 name="amount"
@@ -166,7 +172,9 @@ const ServiceManagement = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600">Name:</label>
+              <label className="block text-sm font-medium text-gray-600">
+                Name:
+              </label>
               <input
                 type="text"
                 name="name"
@@ -179,7 +187,9 @@ const ServiceManagement = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-600">Description:</label>
+            <label className="block text-sm font-medium text-gray-600">
+              Description:
+            </label>
             <textarea
               name="description"
               value={formData.description}
@@ -191,7 +201,9 @@ const ServiceManagement = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-600">Time:</label>
+              <label className="block text-sm font-medium text-gray-600">
+                Time:
+              </label>
               <select
                 name="time"
                 value={formData.time}
@@ -212,7 +224,9 @@ const ServiceManagement = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600">Days:</label>
+              <label className="block text-sm font-medium text-gray-600">
+                Days:
+              </label>
               <select
                 name="days"
                 value={formData.days}
@@ -233,14 +247,22 @@ const ServiceManagement = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-600">Image:</label>
+            <label className="block text-sm font-medium text-gray-600">
+              Image:
+            </label>
             <input
               type="file"
               name="image"
               onChange={handleImageChange}
               className="w-full p-3 mt-1 border border-gray-300 rounded-md"
             />
-            {preview && <img src={preview} alt="Preview" className="mt-4 w-32 h-32 object-cover" />}
+            {preview && (
+              <img
+                src={preview}
+                alt="Preview"
+                className="mt-4 w-32 h-32 object-cover"
+              />
+            )}
           </div>
 
           <div className="flex justify-between">
@@ -248,7 +270,7 @@ const ServiceManagement = () => {
               type="submit"
               className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600"
             >
-              {isEditing ? 'Update Service' : 'Create Service'}
+              {isEditing ? "Update Service" : "Create Service"}
             </button>
             <button
               type="button"
@@ -276,16 +298,20 @@ const ServiceManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {services.map(service => (
+            {services.map((service) => (
               <tr key={service._id}>
                 <td className="py-3 px-6 text-sm">{service.name}</td>
                 <td className="py-3 px-6 text-sm">{service.description}</td>
                 <td className="py-3 px-6 text-sm">{service.amount}</td>
                 <td className="py-3 px-6 text-sm">{service.time}</td>
-                <td className="py-3 px-6 text-sm">{service.days.join(', ')}</td>
+                <td className="py-3 px-6 text-sm">{service.days.join(", ")}</td>
                 <td className="py-3 px-6 text-sm">
                   {service.imageUrl && (
-                    <img src={`https://kovilproject.vinasai.ca${service.imageUrl}`} alt={service.name} className="w-16 h-16 object-cover" />
+                    <img
+                      src={`https://kovilproject.vinasai.ca${service.imageUrl}`}
+                      alt={service.name}
+                      className="w-16 h-16 object-cover"
+                    />
                   )}
                 </td>
                 <td className="py-3 px-6 text-sm">

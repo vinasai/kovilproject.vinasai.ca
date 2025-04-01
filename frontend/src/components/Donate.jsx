@@ -10,7 +10,7 @@ const DonateForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,7 +34,9 @@ const DonateForm = () => {
 
   return (
     <>
-      <h2 className="text-4xl font-bold mb-4 text-center text-black pt-6">Donate Now</h2>
+      <h2 className="text-4xl font-bold mb-4 text-center text-black pt-6">
+        Donate Now
+      </h2>
       <div className="max-w-lg mx-auto p-6 bg-gradient-to-r from-[#F7F4C5] to-[#FFFF] text-black rounded-lg shadow-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -71,7 +73,9 @@ const DonateForm = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Message (Optional)</label>
+            <label className="block text-sm font-medium">
+              Message (Optional)
+            </label>
             <textarea
               name="message"
               value={formData.message}

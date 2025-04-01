@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { CalendarDays, ChevronDown } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { CalendarDays, ChevronDown } from "lucide-react";
 
 const WeeklyPooja = () => {
   const [events, setEvents] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/events/upcoming-events`)
       .then((res) => res.json())
       .then((data) => setEvents(data))
-      .catch((err) => console.error('Error fetching events:', err));
+      .catch((err) => console.error("Error fetching events:", err));
   }, []);
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-xl rounded-xl p-8 border border-gray-300">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-white bg-black p-4 border rounded-lg">Upcoming Events</h2>
+        <h2 className="text-2xl font-bold text-white bg-black p-4 border rounded-lg">
+          Upcoming Events
+        </h2>
         <Link to="/event">
           <CalendarDays className="text-red-500 w-10 h-10" />
         </Link>
@@ -34,7 +36,11 @@ const WeeklyPooja = () => {
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
               >
                 <span>{event.title}</span>
-                <ChevronDown className={`w-6 h-6 transition-transform ${openIndex === index ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`w-6 h-6 transition-transform ${
+                    openIndex === index ? "rotate-180" : ""
+                  }`}
+                />
               </button>
               {openIndex === index && (
                 <div className="p-4 bg-white border-t transition-all duration-300">
@@ -52,7 +58,9 @@ const WeeklyPooja = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-600">No upcoming events at the moment.</p>
+          <p className="text-center text-gray-600">
+            No upcoming events at the moment.
+          </p>
         )}
       </div>
     </div>

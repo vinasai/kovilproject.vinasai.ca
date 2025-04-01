@@ -6,24 +6,24 @@ import "react-calendar/dist/Calendar.css";
 
 const ServiceDetails = () => {
   const { id } = useParams();
-  const [service, setService] = ([]);
+  const [service, setService] = [];
   const [count, setCount] = useState(1);
   const [selectedDates, setSelectedDates] = useState([]);
   const navigate = useNavigate();
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/services`)
-      .then(response => {
+    axios
+      .get(`${BACKEND_URL}/api/services`)
+      .then((response) => {
         const serviceData = Array.isArray(response.data) ? response.data : [];
         setService(serviceData);
       })
-      .catch(error => {
-        console.error('Error fetching services:', error);
+      .catch((error) => {
+        console.error("Error fetching services:", error);
         setService([]); // Ensure fallback to empty array
       });
   }, []);
-  
 
   // Disable past dates
   const isTileDisabled = ({ date }) => {
@@ -35,16 +35,19 @@ const ServiceDetails = () => {
   // Highlight selected dates
   const tileClassName = ({ date }) => {
     const formattedDate = date.toDateString();
-    return selectedDates.includes(formattedDate) ? "bg-orange-500 text-white rounded-full" : "";
+    return selectedDates.includes(formattedDate)
+      ? "bg-orange-500 text-white rounded-full"
+      : "";
   };
 
   // Handle date selection and removal
   const handleDateSelect = (date) => {
     const formattedDate = date.toDateString();
-    setSelectedDates((prev) =>
-      prev.includes(formattedDate)
-        ? prev.filter((d) => d !== formattedDate) // Remove date if already selected
-        : [...prev, formattedDate] // Add date if not selected
+    setSelectedDates(
+      (prev) =>
+        prev.includes(formattedDate)
+          ? prev.filter((d) => d !== formattedDate) // Remove date if already selected
+          : [...prev, formattedDate] // Add date if not selected
     );
   };
 
@@ -71,7 +74,9 @@ const ServiceDetails = () => {
           <div className="w-full md:w-1/3 bg-white p-6 rounded-xl shadow-lg">
             <h2 className="text-3xl font-bold mb-2">{service.name}</h2>
             <p className="text-gray-600 mb-2">{service.description}</p>
-            <p className="text-xl font-semibold mb-4">${service.amount} per unit</p>
+            <p className="text-xl font-semibold mb-4">
+              ${service.amount} per unit
+            </p>
 
             {/* Count Section */}
             <div className="flex items-center gap-2 mb-4">

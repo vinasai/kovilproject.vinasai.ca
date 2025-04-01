@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]); // State to store all users
-  const [searchTerm, setSearchTerm] = useState(''); // State to store the search term
+  const [searchTerm, setSearchTerm] = useState(""); // State to store the search term
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const [selectedUser, setSelectedUser] = useState(null); // State to store the selected user for editing
   const [familyMembers, setFamilyMembers] = useState([]); // State to store family members for editing
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   // Fetch users from the backend
   useEffect(() => {
@@ -16,7 +16,7 @@ const AdminUserManagement = () => {
         const response = await axios.get(`${BACKEND_URL}/api/users`);
         setUsers(response.data); // Set the fetched users to the state
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error("Error fetching users:", error);
       }
     };
 
@@ -25,18 +25,18 @@ const AdminUserManagement = () => {
 
   // Delete a user
   const deleteUser = (userId) => {
-    console.log('Attempting to delete user with ID:', userId); // Debugging
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    console.log("Attempting to delete user with ID:", userId); // Debugging
+    if (window.confirm("Are you sure you want to delete this user?")) {
       axios
         .delete(`${BACKEND_URL}/api/users/${userId}`)
         .then(() => {
-          console.log('User deleted successfully'); // Debugging
+          console.log("User deleted successfully"); // Debugging
           setUsers(users.filter((user) => user._id !== userId)); // Remove the deleted user from the state
         })
         .catch((error) => {
-          console.error('Error deleting user:', error);
+          console.error("Error deleting user:", error);
           if (error.response) {
-            console.error('Backend responded with:', error.response.data); // Debugging
+            console.error("Backend responded with:", error.response.data); // Debugging
           }
         });
     }
@@ -58,7 +58,10 @@ const AdminUserManagement = () => {
 
   // Add a new family member
   const addFamilyMember = () => {
-    setFamilyMembers([...familyMembers, { name: '', dob: '', relationship: '' }]);
+    setFamilyMembers([
+      ...familyMembers,
+      { name: "", dob: "", relationship: "" },
+    ]);
   };
 
   // Update family member details
@@ -72,13 +75,17 @@ const AdminUserManagement = () => {
   const saveFamilyMembers = async () => {
     try {
       const response = await axios.put(
-          `${BACKEND_URL}/api/users/${selectedUser._id}/family-members`,
-          { familyMembers }
+        `${BACKEND_URL}/api/users/${selectedUser._id}/family-members`,
+        { familyMembers }
       );
-      setUsers(users.map((user) => (user._id === selectedUser._id ? response.data : user)));
+      setUsers(
+        users.map((user) =>
+          user._id === selectedUser._id ? response.data : user
+        )
+      );
       closeModal();
     } catch (error) {
-      console.error('Error updating family members:', error);
+      console.error("Error updating family members:", error);
     }
   };
 
@@ -86,7 +93,8 @@ const AdminUserManagement = () => {
   const filteredUsers = users.filter((user) => {
     const searchLower = searchTerm.toLowerCase();
     return (
-      (user.firstname && user.firstname.toLowerCase().startsWith(searchLower)) ||
+      (user.firstname &&
+        user.firstname.toLowerCase().startsWith(searchLower)) ||
       (user.lastname && user.lastname.toLowerCase().startsWith(searchLower)) ||
       (user.email && user.email.toLowerCase().startsWith(searchLower)) ||
       (user.address && user.address.toLowerCase().startsWith(searchLower))
@@ -95,7 +103,9 @@ const AdminUserManagement = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">Admin User Management</h2>
+      <h2 className="text-3xl font-semibold text-center text-gray-700 mb-6">
+        Admin User Management
+      </h2>
 
       {/* Search Bar */}
       <div className="mb-6">
@@ -118,7 +128,9 @@ const AdminUserManagement = () => {
               <th className="py-3 px-6 text-sm text-gray-600">Email</th>
               <th className="py-3 px-6 text-sm text-gray-600">Date of Birth</th>
               <th className="py-3 px-6 text-sm text-gray-600">Address</th>
-              <th className="py-3 px-6 text-sm text-gray-600">Family Members</th>
+              <th className="py-3 px-6 text-sm text-gray-600">
+                Family Members
+              </th>
               <th className="py-3 px-6 text-sm text-gray-600">Actions</th>
             </tr>
           </thead>
@@ -126,20 +138,34 @@ const AdminUserManagement = () => {
             {filteredUsers.length > 0 ? (
               filteredUsers.map((user) => (
                 <tr key={user._id}>
-                  <td className="py-3 px-6 text-sm">{user.firstname || 'N/A'}</td>
-                  <td className="py-3 px-6 text-sm">{user.lastname || 'N/A'}</td>
-                  <td className="py-3 px-6 text-sm">{user.email || 'N/A'}</td>
                   <td className="py-3 px-6 text-sm">
-                    {user.dob ? new Date(user.dob).toLocaleDateString() : 'N/A'}
+                    {user.firstname || "N/A"}
                   </td>
-                  <td className="py-3 px-6 text-sm">{user.address || 'N/A'}</td>
+                  <td className="py-3 px-6 text-sm">
+                    {user.lastname || "N/A"}
+                  </td>
+                  <td className="py-3 px-6 text-sm">{user.email || "N/A"}</td>
+                  <td className="py-3 px-6 text-sm">
+                    {user.dob ? new Date(user.dob).toLocaleDateString() : "N/A"}
+                  </td>
+                  <td className="py-3 px-6 text-sm">{user.address || "N/A"}</td>
                   <td className="py-3 px-6 text-sm">
                     {user.familyMembers && Array.isArray(user.familyMembers) ? (
                       user.familyMembers.map((member, index) => (
                         <div key={index}>
-                          <p><strong>Name:</strong> {member.name || 'N/A'}</p>
-                          <p><strong>DOB:</strong> {member.dob ? new Date(member.dob).toLocaleDateString() : 'N/A'}</p>
-                          <p><strong>Relationship:</strong> {member.relationship || 'N/A'}</p>
+                          <p>
+                            <strong>Name:</strong> {member.name || "N/A"}
+                          </p>
+                          <p>
+                            <strong>DOB:</strong>{" "}
+                            {member.dob
+                              ? new Date(member.dob).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                          <p>
+                            <strong>Relationship:</strong>{" "}
+                            {member.relationship || "N/A"}
+                          </p>
                         </div>
                       ))
                     ) : (
@@ -179,28 +205,36 @@ const AdminUserManagement = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-1/2">
-            <h3 className="text-xl font-semibold mb-4">Edit Family Members for {selectedUser.firstname}</h3>
+            <h3 className="text-xl font-semibold mb-4">
+              Edit Family Members for {selectedUser.firstname}
+            </h3>
             {familyMembers.map((member, index) => (
               <div key={index} className="mb-4">
                 <input
                   type="text"
                   placeholder="Name"
                   value={member.name}
-                  onChange={(e) => updateFamilyMember(index, 'name', e.target.value)}
+                  onChange={(e) =>
+                    updateFamilyMember(index, "name", e.target.value)
+                  }
                   className="w-full p-2 border border-gray-300 rounded-md mb-2"
                 />
                 <input
                   type="date"
                   placeholder="Date of Birth"
                   value={member.dob}
-                  onChange={(e) => updateFamilyMember(index, 'dob', e.target.value)}
+                  onChange={(e) =>
+                    updateFamilyMember(index, "dob", e.target.value)
+                  }
                   className="w-full p-2 border border-gray-300 rounded-md mb-2"
                 />
                 <input
                   type="text"
                   placeholder="Relationship"
                   value={member.relationship}
-                  onChange={(e) => updateFamilyMember(index, 'relationship', e.target.value)}
+                  onChange={(e) =>
+                    updateFamilyMember(index, "relationship", e.target.value)
+                  }
                   className="w-full p-2 border border-gray-300 rounded-md mb-2"
                 />
               </div>

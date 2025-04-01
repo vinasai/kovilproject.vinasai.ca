@@ -6,7 +6,7 @@ import axios from "axios";
 
 const EventCalendar = () => {
   const [events, setEvents] = useState([]);
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     axios
@@ -47,9 +47,10 @@ const EventCalendar = () => {
         events={events}
         eventContent={(eventInfo) => (
           <div>
-          
             <strong>{eventInfo.event.title}</strong>
-            <p style={{ fontSize: "13px" }}>{eventInfo.event.extendedProps.description}</p>
+            <p style={{ fontSize: "13px" }}>
+              {eventInfo.event.extendedProps.description}
+            </p>
           </div>
         )}
       />

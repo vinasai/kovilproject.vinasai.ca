@@ -17,7 +17,7 @@ const SignupForm = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const BACKEND_URL =import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,12 +39,12 @@ const SignupForm = () => {
     setError(null);
 
     // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        setError("Please enter a valid email address.");
-        setLoading(false);
-        return;
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
 
     // Validate family members
     if (familyMembers.length > 0 && !validateFamilyMembers()) {
@@ -62,7 +62,7 @@ const SignupForm = () => {
 
     try {
       const payload = { ...formData, familyMembers }; // Combine data
-      const response = await axios.post(`${BACKEND_URL}/api/signup`,payload);
+      const response = await axios.post(`${BACKEND_URL}/api/signup`, payload);
       setSuccess("Thank you for creating an account!");
       setFormData({
         firstname: "",
@@ -83,7 +83,9 @@ const SignupForm = () => {
 
   return (
     <>
-      <h2 className="text-4xl font-bold mb-4 text-center text-black pt-6">Sign Up</h2>
+      <h2 className="text-4xl font-bold mb-4 text-center text-black pt-6">
+        Sign Up
+      </h2>
       <div className="max-w-lg mx-auto p-6 bg-gradient-to-r from-[#F7F4C5] to-[#FFFF] text-black rounded-lg shadow-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -157,7 +159,9 @@ const SignupForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Confirm Password</label>
+            <label className="block text-sm font-medium">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmpassword"
@@ -172,7 +176,10 @@ const SignupForm = () => {
           <div
             className="flex items-center mt-2 cursor-pointer text-[#1E3A8A] hover:text-[#2563EB]"
             onClick={() =>
-              setFamilyMembers([...familyMembers, { name: "", dob: "", relationship: "" }])
+              setFamilyMembers([
+                ...familyMembers,
+                { name: "", dob: "", relationship: "" },
+              ])
             }
           >
             <FaPlus className="mr-2" />
@@ -185,7 +192,9 @@ const SignupForm = () => {
               className="mt-4 p-4 border border-[#8B4513] rounded bg-[#FFFF]"
             >
               <div className="mb-2">
-                <label className="block text-sm font-medium">Family Member Name</label>
+                <label className="block text-sm font-medium">
+                  Family Member Name
+                </label>
                 <input
                   type="text"
                   value={member.name}
@@ -200,7 +209,9 @@ const SignupForm = () => {
               </div>
 
               <div className="mb-2">
-                <label className="block text-sm font-medium">Date of Birth</label>
+                <label className="block text-sm font-medium">
+                  Date of Birth
+                </label>
                 <input
                   type="date"
                   value={member.dob}
@@ -241,8 +252,12 @@ const SignupForm = () => {
             {loading ? "Processing..." : "Sign Up"}
           </button>
         </form>
-        {success && <p className="text-center mt-4 text-sm text-green-600">{success}</p>}
-        {error && <p className="text-center mt-4 text-sm text-red-600">{error}</p>}
+        {success && (
+          <p className="text-center mt-4 text-sm text-green-600">{success}</p>
+        )}
+        {error && (
+          <p className="text-center mt-4 text-sm text-red-600">{error}</p>
+        )}
       </div>
     </>
   );

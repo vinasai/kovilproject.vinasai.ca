@@ -8,7 +8,7 @@ const AuthForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
-  const BACKEND_URL = import.meta.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ const AuthForm = () => {
     try {
       // Send login request
       const response = await axios.post(
-  `${BACKEND_URL}/api/auth/login`,
+        `${BACKEND_URL}/api/auth/login`,
         { email, password },
         {
           headers: {
@@ -97,7 +97,11 @@ const AuthForm = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+            style={{
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
           />
           <input
             type="password"
@@ -105,7 +109,11 @@ const AuthForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+            style={{
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
           />
           <button
             type="submit"
@@ -126,7 +134,11 @@ const AuthForm = () => {
           Don't have an account?{" "}
           <span
             onClick={() => navigate("/signup")} // Redirect to the signup page
-            style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
+            style={{
+              color: "blue",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
           >
             Register
           </span>
