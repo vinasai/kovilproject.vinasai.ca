@@ -71,8 +71,8 @@ const Header = () => {
               <li><a href="/service" className="block hover:text-gray-300">Service</a></li>
               <li><a href="/gallery" className="block hover:text-gray-300">Photo</a></li>
               <li><a href="/video" className="block hover:text-gray-300">Videos</a></li>
-              <li><a href="/" className="block hover:text-gray-300">Calendar</a></li>
-              <li><a href="/" className="block hover:text-gray-300">Donate</a></li>
+              <li><a href="/event" className="block hover:text-gray-300">Calendar</a></li>
+              <li><a href="/donate" className="block hover:text-gray-300">Donate</a></li>
               <li><a href="/contact" className="hover:text-gray-300">Contact</a></li>
               <button className="bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition-all duration-300">
                 Login
