@@ -60,8 +60,8 @@ jobs:
             fi
             # Deploy the frontend (Next.js)
             cd "$FRONTEND_DIR"
-            yarn install
-            yarn run build
+            npm install
+            npm run build
 
             # Determine if the output folder is 'build' or 'dist'
             if [ -d "build" ]; then
